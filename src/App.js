@@ -19,7 +19,7 @@ function App() {
           <Route path="/login" component={Login}/>
         </Switch>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

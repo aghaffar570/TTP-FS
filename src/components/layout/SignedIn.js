@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { Link } from 'react-router-dom'
 
 const SignedIn = () => {
@@ -8,7 +8,7 @@ const SignedIn = () => {
       <Link to='/transactions'>Transactions</Link>
       <a href="">Log Out</a>
     </div>
-  );
+  )
 }
 
-export default SignedIn;
+export default SignedIn
