@@ -33,7 +33,7 @@ export default class Signup extends Component {
 
   render() {
     const { createdUser } = this.state
-    if(createdUser) return <Redirect to="/" />
+    if(createdUser) return <Redirect to='/portfolio' />
     return (
       <>
         <form onSubmit={this.handleSignUp}>

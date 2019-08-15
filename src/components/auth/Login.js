@@ -33,7 +33,7 @@ export default class Login extends Component {
 
   render() {
     const { foundUser } = this.state
-    if(foundUser) return <Redirect to="/" />
+    if(foundUser) return <Redirect to={{ pathname: "/portfolio"}} />
     return (
       <>
         <form onSubmit={this.handleLogin}>
