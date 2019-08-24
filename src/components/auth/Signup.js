@@ -1,23 +1,23 @@
 import React, { useContext, useCallback } from 'react'
 import { withRouter } from 'react-router-dom'
-import { AuthContext } from '../providers/AuthContext'
+import { TradeContext } from '../providers/TradeContext'
 import firebase from '../../config/firebase'
 import Nav from '../layouts/Nav'
 
 const Signup = ({ history }) => {
-  const { currentUser } = useContext(AuthContext)
+  const { dispatch } = useContext(TradeContext)
 
   const handleSignup = useCallback(e => {
     e.preventDefault()
     const { username, email, password } = e.target.elements
     try {
-      firebase.auth().createUserWithEmailAndPassword(email.value, password.value)
+      firebase.auth()
+        .createUserWithEmailAndPassword(email.value, password.value)
         .then(({ user }) => {
-          firebase.firestore().collection('trades').doc(user.uid).set({
-            username: username.value,
-            trades: [],
-            profits: 0,
-            balance: 5000
+          dispatch({
+            type: 'CREATE_NEW_USER_DATA',
+            userId: user.uid,
+            username: username.value
           })
         })
       history.push('/')

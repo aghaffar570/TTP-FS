@@ -1,35 +1,23 @@
 import React, { useContext, useCallback } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
 import { AuthContext } from '../providers/AuthContext'
+import { TradeContext } from '../providers/TradeContext'
 import firebase from '../../config/firebase'
 import Nav from '../layouts/Nav'
 
 const Login = ({ history }) => {
+  const { currentUser } = useContext(AuthContext)
+  const { dispatch } = useContext(TradeContext)
 
-  const { currentUser, setCurrentUser } = useContext(AuthContext)
-
-  const handleLogin = useCallback(async e => {
+  const handleLogin = useCallback(e => {
     e.preventDefault()
     const { email, password } = e.target.elements
     try {
-      const user = firebase.auth().signInWithEmailAndPassword(email.value, password.value)
-      console.log('login user>>', user);
-
-      /**
-       * get user info once logged in
-       * update state for tradeContext
-       */
-      // firebase.firestore()
-      //   .collection('trades').doc()
-      //   .then(documentSnapshot => {
-      //     if (documentSnapshot.exists) {
-      //       // do something with the data
-      //     } else {
-      //       console.log('document not found');
-      //     }
-      //     console.log('DATA BACK', documentSnapshot.data());
-      //   })
-
+      firebase.auth()
+        .signInWithEmailAndPassword(email.value, password.value)
+        // .then(({ user }) => {
+        //   dispatch({ type: 'GET_USER_DATA',  userId: user.uid })
+        // })
       history.push('/')
     } catch (err) {
       console.error(err)
