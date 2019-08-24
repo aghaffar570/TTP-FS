@@ -1,21 +1,13 @@
-import React, { useState, createContext } from 'react'
-import firebase from '../../config/firebase'
+import React, { useReducer, createContext } from 'react'
+import tradeReducer from '../reducers/TradeReducer';
 
 export const TradeContext = createContext()
 
 export function TradeProvider({ children }) {
-  const [tradeSymbol, setTradeSymbol] = useState('')
-  const [tradeQuantity, setTradeQuantity] = useState(0)
-
-  const value = {
-    tradeSymbol,
-    tradeQuantity,
-    setTradeSymbol,
-    setTradeQuantity
-  }
+  const [trades, dispatch] = useReducer(tradeReducer, {})
 
   return (
-    <TradeContext.Provider value={value}>
+    <TradeContext.Provider value={{ trades, dispatch }}>
       { children }
     </TradeContext.Provider>
   )

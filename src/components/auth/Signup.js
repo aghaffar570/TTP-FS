@@ -5,24 +5,21 @@ import firebase from '../../config/firebase'
 import Nav from '../layouts/Nav'
 
 const Signup = ({ history }) => {
-
   const { currentUser } = useContext(AuthContext)
 
-  const handleSignup = useCallback(async e => {
+  const handleSignup = useCallback(e => {
     e.preventDefault()
     const { username, email, password } = e.target.elements
     try {
-      const userCreated = firebase.auth().createUserWithEmailAndPassword(email.value, password.value)
-      console.log('usercreated', userCreated)
-
-      /**
-       * NEW USERS COLLECTION
-       * id: user.uid
-       * username: username
-       * trades: []
-       * balance: 5000
-       */
-      // firebase.firestore().collection('trades').doc()
+      firebase.auth().createUserWithEmailAndPassword(email.value, password.value)
+        .then(({ user }) => {
+          firebase.firestore().collection('trades').doc(user.uid).set({
+            username: username.value,
+            trades: [],
+            profits: 0,
+            balance: 5000
+          })
+        })
       history.push('/')
     } catch (err) {
       console.error(err)
