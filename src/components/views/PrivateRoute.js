@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
-import { Route, Redirect } from "react-router-dom";
-import { AuthContext } from "../providers/AuthContext";
+import React, { useContext, useEffect } from "react"
+import { Route, Redirect } from "react-router-dom"
+import { AuthContext } from "../providers/AuthContext"
+import firebase from '../../config/firebase'
+
 
 const PrivateRoute = ({ component: RouteComponent, ...rest }) => {
-  const {currentUser} = useContext(AuthContext)
-
-  console.log('CurrentUser:PrivateRoute', currentUser);
+  const { currentUser } = useContext(AuthContext)
 
   return (
     <Route

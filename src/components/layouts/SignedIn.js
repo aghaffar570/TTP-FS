@@ -1,15 +1,23 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
+
 import firebase from '../../config/firebase'
 
-const SignedIn = () => {
+const SignedIn = ({ history }) => {
+
+  const signOut = e => {
+    e.preventDefault()
+    firebase.auth().signOut()
+    history.push('/login')
+  }
+
   return (
-    <div>
+    <div className="links">
       <Link to='/portfolio'>Portfolio</Link>
       <Link to='/transactions'>Transactions</Link>
-      <a onClick={() => firebase.auth().signOut()}>Log Out</a>
+      <a style={{cursor: 'pointer'}} onClick={signOut}>Log Out</a>
     </div>
   )
 }
 
-export default SignedIn
+export default withRouter(SignedIn)

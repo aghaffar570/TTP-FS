@@ -8,7 +8,7 @@ export function AuthProvider({ children }) {
 
   useEffect(useCallback(() => {
     firebase.auth().onAuthStateChanged(setCurrentUser)
-  }, []))
+  }, [currentUser]))
 
   return (
     <AuthContext.Provider value={{ currentUser, setCurrentUser }}>

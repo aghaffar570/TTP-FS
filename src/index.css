@@ -11,3 +11,89 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+a {
+  text-decoration: none;
+  color: #874daf;
+}
+
+.links {
+  width: 50%;
+  margin: 2em auto;
+  display: flex;
+  justify-content: space-around;
+}
+
+.App {
+  width: 75%;
+  margin: 1em auto;
+}
+
+
+.portfolio {
+  display: flex;
+  justify-content: space-around;
+}
+
+.login, .signup {
+  width: 55%;
+  margin: 0 auto;
+  text-align: center;
+  background: #eee;
+  padding: 1em 2em 4em;
+}
+
+.search {
+  width: 15em;
+  background: #eee;
+  padding: 1em;
+}
+
+.search form,
+.login form,
+.signup form {
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-content: space-around;
+  justify-content: space-around;
+}
+
+.search form input,
+.login form input,
+.signup form input {
+  padding: 5px 9px;
+  font-family: sans-serif;
+  letter-spacing: 1px;
+  outline: none;
+}
+
+
+.search form button,
+.login form button,
+.signup form button {
+  padding: 5px 9px;
+  font-family: sans-serif;
+  background: #4c924c;
+  color: white;
+  cursor: pointer;
+  border: none;
+  font-size: 18px;
+}
+
+.login form button {
+  background: #488193;
+}
+
+.signup form button {
+  background: #874daf;
+}
+
+.my_trades {
+  font-family: monospace;
+  color: white;
+  padding: 7px 15px;
+  border-radius: 3px;
+  background: #343c45eb;
+}
+

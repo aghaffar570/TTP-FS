@@ -35,19 +35,21 @@ const getUserData = async (state, userId) => {
 }
 
 
-const buyShares = (state, balance, stock, userId) => {
-  getUserData(state, userId)
-    .then(userData => {
-      console.log(userData, 'usersDAta');
-      firebase.firestore().collection('trades').doc(userId).update({
-        balance,
-        trades: [ ...userData.trades, ...stock]
-      })
-    })
-    .finally(result => {
-      console.log('result data', result)
-    })
-  // return { ...state, trades: [ ...stock], balance: state.balance - cost }
+const buyShares = (state, balance, stock, buy, userId) => {
+  console.log('buy shares reducer');
+
+  // getUserData(state, userId)
+  //   .then(userData => {
+  //     console.log(userData, 'usersDAta');
+  //     firebase.firestore().collection('trades').doc(userId).update({
+  //       balance,
+  //       trades: [ ...userData.trades, ...stock]
+  //     })
+  //   })
+  //   .finally(result => {
+  //     console.log('result data', result)
+  //   })
+  // return { ...state, trades: [ ...stock], balance, test: 'test data' }
 }
 
 
@@ -59,7 +61,7 @@ const TradeReducer = (state = initialState, action) => {
     case 'GET_USER_DATA':
       return getUserData(state, action.userId)
     case 'BUY_SHARES':
-      return buyShares(state, action.balance, action.stock, action.userId)
+      return //buyShares(state, action.balance, action.stock, action.buy, action.userId)
     case 'SELL_SHARES':
       return { ...state, }
     default:

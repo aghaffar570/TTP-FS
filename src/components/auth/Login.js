@@ -7,7 +7,7 @@ import Nav from '../layouts/Nav'
 
 const Login = ({ history }) => {
   const { currentUser } = useContext(AuthContext)
-  const { dispatch } = useContext(TradeContext)
+  // const { dispatch } = useContext(TradeContext)
 
   const handleLogin = useCallback(e => {
     e.preventDefault()
@@ -18,7 +18,7 @@ const Login = ({ history }) => {
         // .then(({ user }) => {
         //   dispatch({ type: 'GET_USER_DATA',  userId: user.uid })
         // })
-      history.push('/')
+      history.push('/portfolio')
     } catch (err) {
       console.error(err)
     }
@@ -29,15 +29,17 @@ const Login = ({ history }) => {
   }
 
   return (
-    <div>
+    <>
       <Nav />
-      <h2>Log In</h2>
-      <form onSubmit={handleLogin}>
-        <input type='email' name='email' placeholder="email" />
-        <input type='password' name='password' placeholder="password" />
-        <button type="submit">Login</button>
-      </form>
-    </div>
+      <div className="login">
+        <h2>Log In</h2>
+        <form onSubmit={handleLogin}>
+          <input type='email' name='email' placeholder="email" />
+          <input type='password' name='password' placeholder="password" />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </>
   )
 }
 

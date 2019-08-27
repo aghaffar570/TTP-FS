@@ -5,7 +5,7 @@ import firebase from '../../config/firebase'
 import Nav from '../layouts/Nav'
 
 const Signup = ({ history }) => {
-  const { dispatch } = useContext(TradeContext)
+  // const { dispatch } = useContext(TradeContext)
 
   const handleSignup = useCallback(e => {
     e.preventDefault()
@@ -14,29 +14,32 @@ const Signup = ({ history }) => {
       firebase.auth()
         .createUserWithEmailAndPassword(email.value, password.value)
         .then(({ user }) => {
-          dispatch({
-            type: 'CREATE_NEW_USER_DATA',
-            userId: user.uid,
-            username: username.value
+          firebase.firestore().collection('trades').doc(user.uid).set({
+            username: username.value,
+            trades: [],
+            profits: 0,
+            balance: 5000
           })
         })
-      history.push('/')
+      history.push('/portfolio')
     } catch (err) {
       console.error(err)
     }
   }, [history])
 
   return (
-    <div>
+    <>
       <Nav />
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSignup}>
-        <input type='text' name='username' placeholder="username" />
-        <input type='email' name='email' placeholder="email" />
-        <input type='password' name='password' placeholder="password" />
-        <button type="submit">Sign Up</button>
-      </form>
-    </div>
+      <div className="signup">
+        <h2>Sign Up</h2>
+        <form onSubmit={handleSignup}>
+          <input type='text' name='username' placeholder="username" />
+          <input type='email' name='email' placeholder="email" />
+          <input type='password' name='password' placeholder="password" />
+          <button type="submit">Sign Up</button>
+        </form>
+      </div>
+    </>
   )
 }
 

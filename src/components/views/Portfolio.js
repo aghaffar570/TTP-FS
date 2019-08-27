@@ -1,79 +1,134 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
+// import React, { useState, useEffect, useContext, useCallback } from 'react'
 import { AuthContext } from '../providers/AuthContext'
+import { Redirect } from 'react-router-dom'
 import { TradeContext } from '../providers/TradeContext'
 import firebase from '../../config/firebase'
 import Nav from '../layouts/Nav'
-import Trade from './Trade'
+import Search from './Search'
 import axios from 'axios'
 
 
-const Portfolio = () => {
-  const { currentUser } = useContext(AuthContext)
-  const { userData, dispatch } = useContext(TradeContext)
+import React, { Component } from 'react'
 
-  const [isLoading, setLoadingStatus] = useState(false)
-  const [stocks, setStocks] = useState([])
+class Portfolio extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      username: '',
+      trades: [],
+      balance: 0,
+      profits: 0,
+      stocks: [],
+    }
+    this.id = null
+  }
 
-  const [username, setUsername] = useState('')
-  const [balance, setBalance] = useState(0)
-  const [profits, setProftis] = useState(0)
-
-
-  useEffect(() => { // get user data from Firestore
+  fetchStockData = () => {
+    const { currentUser } = this.props
     if(currentUser) {
-      firebase.firestore().collection('trades').doc(currentUser.uid).get()
-        .then((userDoc) => {
-          if(userDoc.exists) {
-            const docData = userDoc.data()
-            setUsername(docData.username)
-            setBalance(docData.balance)
-            setProftis(docData.profits + docData.balance)
-            console.log('userCC', currentUser, docData);
+      firebase.firestore().collection('trades')
+        .doc(currentUser.uid).get()
+        .then((doc) => {
+          if(doc.exists) {
+            const { username, balance, profits, trades } = doc.data()
+            this.setState({
+              username,
+              trades,
+              balance,
+              profits
+            })
+            return axios.get('https://api.iextrading.com/1.0/tops/last')
+          }
+        })
+        .then(({data}) => {
+          const { balance, profits, trades } = this.state
+          if(trades.length) {
+            const symbols = trades.map(stock => stock.symbol)
+            const shares = trades.map(stock => stock.shares)
+            const myTrades = data.filter(stock => symbols.includes(stock.symbol))
+            let myProfits = 0
+            myTrades.forEach((stock, idx) => {
+              myProfits += stock.price * shares[idx]
+            })
+            this.setState({
+              stocks: myTrades,
+              profits: myProfits
+            })
           }
         })
     }
-  })
-
-
-  useEffect(() => { // get stock data from API
-    setLoadingStatus(true)
-    axios.get(`https://api.iextrading.com/1.0/tops/last`)
-      .then(({data}) => {
-        setStocks(data)
-      })
-      .then(() => {
-        setLoadingStatus(false)
-      })
-  }, [])
-
-
-  if(isLoading) {
-    return <p>Loading...</p>
   }
 
-  return (
-    <div>
-      <Nav />
-      <h2>{username.toUpperCase()} Portfolio (${profits})</h2>
-      {
-        console.log('userDAta after dispatch', userData)
-      }
+  updateView = value => {
+    if(value) this.fetchStockData()
+  }
 
-      {
-        // have all the stock data, but only visible in Trade when making queries
-        stocks.length
-        // !!stocks.length &&
-        // stocks.slice(0, 10).map(stock => {
-        //   <p key={stock.symbol}>{stock.symbol} is now at ${stock.price}</p>
-        // })
-        /**
-         * list all trades made here
-         */
-      }
-      <Trade stocks={stocks} balance={balance} />
-    </div>
-  )
+  componentDidMount() {
+    this.fetchStockData()
+  }
+
+  render() {
+    const getColor = color => ({
+      color,
+      background: '#eee',
+      padding: '2px 4px',
+      fontWeight: 900
+    })
+
+    const { username, balance, profits, trades, stocks } = this.state
+    const { currentUser, match } = this.props
+    // console.log('props and state', this.props, this.state);
+    if(match.path === '/' && !currentUser.uid) return <Redirect to="/login" />
+
+    return (
+      <>
+      <Nav />
+      <div className="portfolio">
+        <div className="trades">
+          <h2>{username.toUpperCase()} Portfolio (${profits})</h2>
+        {
+          stocks.length
+          ? stocks.map((stock, idx) => {
+            let colorProp
+            if(trades[idx].price === stock.price) {
+              colorProp = getColor('grey')
+            } else if (trades[idx].price < stock.price) {
+              colorProp = getColor('red')
+            } else {
+              colorProp = getColor('green')
+            }
+            return (
+              <p className="my_trades" key={trades[idx].id} >
+                {trades[idx].shares} shares of {stock.symbol} : <span style={colorProp}>${(stock.price).toFixed(2)}</span>
+              </p>
+            )
+          })
+          : stocks.length === 0
+          ? null
+          :'Loading...'
+        }
+        </div>
+        <Search balance={balance} updateView={this.updateView}/>
+      </div>
+      </>
+    )
+  }
 }
 
-export default Portfolio
+
+
+
+const PortfolioWrapper = (props) => {
+  return (
+    <AuthContext.Consumer>
+      {authProps =>
+      <TradeContext.Consumer>
+          {tradeProps =>
+            <Portfolio {...props} {...authProps} {...tradeProps}/>
+        }</TradeContext.Consumer>
+      }</AuthContext.Consumer>
+  );
+}
+
+export default PortfolioWrapper;
 
