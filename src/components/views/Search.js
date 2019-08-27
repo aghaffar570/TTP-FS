@@ -5,7 +5,6 @@ import firebase from '../../config/firebase'
 import lodash from 'lodash'
 import uuid from 'uuid/v1'
 import { buyShares } from '../reducers/TradeReducer'
-import Trade from './Trade'
 import axios from 'axios';
 
 
@@ -31,7 +30,7 @@ const Search = ({ balance, updateView }) => {
 
           const { username, balance, profits, trades } = userDoc.data()
           if(userDoc.exists && cost < balance) {
-            console.log(cost, balance, '$$$');
+            console.log(stock, cost, userDoc.data(), '$$$');
 
             firebase.firestore()
               .collection('trades').doc(currentUser.uid).update({
@@ -91,7 +90,7 @@ const Search = ({ balance, updateView }) => {
       </form>
       {
         searchResult.symbol
-        ? <Trade stock={searchResult}/>
+        ? <p className="my_trades">{searchResult.symbol} @ ${searchResult.price}/share</p>
         : null
       }
     </div>

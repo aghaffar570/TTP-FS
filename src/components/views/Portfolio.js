@@ -23,6 +23,8 @@ class Portfolio extends Component {
     this.id = null
   }
 
+  intervalId = null
+
   fetchStockData = () => {
     const { currentUser } = this.props
     if(currentUser) {
@@ -65,14 +67,24 @@ class Portfolio extends Component {
 
   componentDidMount() {
     this.fetchStockData()
+
+    this.intervalId = setInterval(() => {
+      this.fetchStockData()
+    }, 100000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalId)
   }
 
   render() {
     const getColor = color => ({
       color,
+      width:'90px',
       background: '#eee',
       padding: '2px 4px',
-      fontWeight: 900
+      fontWeight: 900,
+      textAlign: 'center'
     })
 
     const { username, balance, profits, trades, stocks } = this.state
@@ -85,21 +97,31 @@ class Portfolio extends Component {
       <Nav />
       <div className="portfolio">
         <div className="trades">
-          <h2>{username.toUpperCase()} Portfolio (${profits})</h2>
+          <h2>{username.toUpperCase()} Portfolio (${(balance + profits).toFixed(3)})</h2>
         {
           stocks.length
           ? stocks.map((stock, idx) => {
+            const mTrade = trades.filter(trade => trade.symbol === stock.symbol)[0]
             let colorProp
-            if(trades[idx].price === stock.price) {
+            let colorSym
+            if(mTrade.price === stock.price) {
               colorProp = getColor('grey')
-            } else if (trades[idx].price < stock.price) {
-              colorProp = getColor('red')
-            } else {
+              colorSym = 'grey'
+            } else if (mTrade.price < stock.price) {
               colorProp = getColor('green')
+              colorSym = 'green'
+            } else {
+              colorProp = getColor('red')
+              colorSym = 'red'
             }
             return (
-              <p className="my_trades" key={trades[idx].id} >
-                {trades[idx].shares} shares of {stock.symbol} : <span style={colorProp}>${(stock.price).toFixed(2)}</span>
+              <p className="my_trades" key={mTrade.id} >
+                <span>
+                  <span style={{ color: colorSym, letterSpacing: '1px', fontWeight: 'bold' }}>
+                  {stock.symbol}</span>
+                  <span> - {mTrade.shares} shares</span>
+                </span>
+                <span style={colorProp}>${(stock.price).toFixed(3)}</span>
               </p>
             )
           })

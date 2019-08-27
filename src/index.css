@@ -91,6 +91,8 @@ a {
 
 .my_trades {
   font-family: monospace;
+  display: flex;
+  justify-content: space-between;
   color: white;
   padding: 7px 15px;
   border-radius: 3px;
