@@ -35,6 +35,10 @@ a {
   justify-content: space-around;
 }
 
+.trades h2 {
+  margin: 0;
+}
+
 .login, .signup {
   width: 55%;
   margin: 0 auto;
@@ -96,6 +100,6 @@ a {
   color: white;
   padding: 7px 15px;
   border-radius: 3px;
-  background: #343c45eb;
+  background: #353a40eb;
 }
 

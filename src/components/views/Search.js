@@ -71,7 +71,7 @@ const Search = ({ balance, updateView }) => {
 
   return (
     <div className="search">
-      <h3>Balance - {balance}</h3>
+      <h3>Balance - {(balance).toFixed(2)}</h3>
       <form onSubmit={(e) => handleSubmit(e, searchResult)}>
         <input
           type="text"
